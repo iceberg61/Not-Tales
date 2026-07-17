@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Instagram, Twitter, Facebook } from "lucide-react";
 
-const categories = ["Women Collection", "Men's Fashions", "Children's Clothes", "Baby Collection"];
+const categories = ["Jeans", "Shirt", "Caps", "Others"];
 const importantLinks = ["Shop Page", "FAQ", "About Shop", "Blog"];
 
 export default function Footer() {
@@ -14,7 +14,7 @@ export default function Footer() {
             <span className="font-display text-xl font-semibold">Not Tales</span>
           </div>
           <p className="text-ink/50 text-sm mt-4 max-w-[200px]">
-            6363 Forest St, Aberdeen, New Mexico 30124
+            Abuja, Unah Street Phase 1
           </p>
         </div>
 
@@ -36,18 +36,18 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <h4 className="font-medium mb-4 text-sm">Subscribe</h4>
           <p className="text-sm text-ink/50 mb-3">Get 10% off your first order.</p>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="email"
               placeholder="Enter your email"
-              className="bg-cream-2 rounded-pill px-4 py-2 text-sm flex-1 outline-none"
+              className="bg-cream-2 rounded-pill px-4 py-2 text-sm flex-1 outline-none min-w-0"
             />
-            {/* <button className="bg-ink text-cream rounded-pill px-4 py-2 text-sm font-medium">
+            <button className="bg-ink text-cream rounded-pill px-4 py-2 text-sm font-medium hover:bg-brown-dark transition-colors shrink-0">
               Subscribe
-            </button> */}
+            </button>
           </div>
           <div className="flex gap-4 mt-6 text-ink/60">
             <Instagram size={18} />

@@ -10,22 +10,22 @@ export const infoStrip = [
 
 export const collections = [
   {
-    name: "Man",
-    count: "4000+ Products",
+    name: "Jeans",
+    count: "1200+ Products",
     image:
-      "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=400&q=80",
+      "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&q=80",
   },
   {
-    name: "Woman",
-    count: "6000+ Products",
+    name: "Clothes",
+    count: "2500+ Products",
     image:
-      "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&q=80",
+      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80",
   },
   {
-    name: "Kid",
-    count: "3000+ Products",
+    name: "Caps",
+    count: "800+ Products",
     image:
-      "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&q=80",
+      "https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&q=80",
   },
 ];
 
@@ -34,6 +34,8 @@ export const featuredProduct = {
   description: "Spend minimal $100 get 30% off voucher code for your next purchase",
   image:
     "https://images.unsplash.com/photo-1622445275576-721325763afe?w=500&q=80",
+  modelImage:
+    "https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=400&q=80",
   colors: ["#2E2E2E", "#4FA3A3", "#E8A33D"],
   sizes: ["S", "M", "L", "XL"],
   rating: 4.9,
@@ -85,4 +87,8 @@ export const lookbook = [
   "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&q=80",
   "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=400&q=80",
   "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=400&q=80",
+  "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400&q=80",
+  "https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=400&q=80",
+  "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&q=80",
+  "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=400&q=80",
 ];
