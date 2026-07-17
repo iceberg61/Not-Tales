@@ -92,3 +92,26 @@ export const lookbook = [
   "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&q=80",
   "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=400&q=80",
 ];
+
+// Seeds the cart store so Cart/Checkout have something to display before
+// real "Add to cart" wiring exists on the product pages (Phase 2/3).
+export const cartSeed = [
+  {
+    id: "p1",
+    name: "100% cotton long sleeve shirt",
+    image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80",
+    price: 140,
+    size: "M",
+    color: "#2E2E2E",
+    quantity: 1,
+  },
+  {
+    id: "p3",
+    name: "100% cotton long sleeve shirt",
+    image: "https://images.unsplash.com/photo-1485231183945-fffde7cc051e?w=400&q=80",
+    price: 150,
+    size: "L",
+    color: "#7BA7C9",
+    quantity: 2,
+  },
+];
