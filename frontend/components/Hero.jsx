@@ -12,14 +12,14 @@ const heroBackgrounds = [
 
 const sideImages = [
   {
-    src: "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=500&q=80",
+    src: "/images/IMG-20260718-WA0123.jpg",
     alt: "Model wearing a red jacket",
     width: 240,
     height: 300,
     className: "absolute left-6 top-8",
   },
   {
-    src: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&q=80",
+    src: "/images/IMG-20260718-WA0030.jpg",
     alt: "Model seated, styled look",
     width: 280,
     height: 360,

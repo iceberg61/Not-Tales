@@ -13,7 +13,10 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-const linkHover = "hover:text-brown-dark transition-colors";
+// text-ink is explicit here on purpose — Tailwind's preflight doesn't
+// override the browser's default link color, so without it these render
+// as default blue/visited-purple instead of the brand ink color.
+const linkHover = "text-ink hover:text-brown-dark transition-colors";
 
 function NavLinks({ className, onLinkClick }) {
   return links.map((l) => (
@@ -43,7 +46,10 @@ export default function Navbar() {
           <NavLinks className={linkHover} />
         </nav>
 
-        <div className="flex items-center gap-3 md:gap-5">
+        {/* Icon cluster — full set on desktop (with a divider separating
+            "your stuff" from "your account"), pared down to just Cart on
+            mobile since Search/Wishlist/Account move into the drawer. */}
+        <div className="flex items-center gap-3 md:gap-4">
           <button
             aria-label="Search"
             onClick={() => setSearchOpen(true)}
@@ -51,7 +57,8 @@ export default function Navbar() {
           >
             <Search size={20} />
           </button>
-          <Link href="/wishlist" aria-label="Wishlist" className={`relative ${linkHover}`}>
+
+          <Link href="/wishlist" aria-label="Wishlist" className={`hidden sm:block relative ${linkHover}`}>
             <Heart size={20} />
             {wishlistCount > 0 && (
               <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-brown-dark text-cream text-[10px] flex items-center justify-center">
@@ -59,6 +66,7 @@ export default function Navbar() {
               </span>
             )}
           </Link>
+
           <button
             aria-label="Cart"
             onClick={() => setCartOpen(true)}
@@ -71,9 +79,13 @@ export default function Navbar() {
               </span>
             )}
           </button>
-          <Link href="/login" aria-label="Account" className={linkHover}>
+
+          <span className="hidden sm:block w-px h-5 bg-ink/10" />
+
+          <Link href="/login" aria-label="Account" className={`hidden sm:block ${linkHover}`}>
             <User size={20} />
           </Link>
+
           <button className="md:hidden p-1" onClick={() => setOpen(!open)} aria-label="Toggle menu">
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -81,18 +93,40 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <nav className="md:hidden border-t border-ink/10 bg-cream px-4 py-6 flex flex-col gap-5 text-sm font-medium">
-          <NavLinks className="py-1" onLinkClick={closeMenu} />
+        <nav className="md:hidden border-t border-ink/10 bg-cream px-4 py-6 flex flex-col gap-1 text-sm font-medium">
+          <div className="flex flex-col gap-1 pb-4 mb-4 border-b border-ink/10">
+            <NavLinks className={`py-2.5 ${linkHover}`} onLinkClick={closeMenu} />
+          </div>
+
           <button
-            className={`sm:hidden flex items-center gap-3 py-1 text-left ${linkHover}`}
+            className={`sm:hidden flex items-center gap-3 py-2.5 text-left ${linkHover}`}
             onClick={() => {
               closeMenu();
               setSearchOpen(true);
             }}
           >
-            <Search size={20} />
+            <Search size={18} />
             <span>Search</span>
           </button>
+
+          <Link
+            href="/wishlist"
+            onClick={closeMenu}
+            className={`sm:hidden flex items-center justify-between py-2.5 ${linkHover}`}
+          >
+            <span className="flex items-center gap-3">
+              <Heart size={18} /> Wishlist
+            </span>
+            {wishlistCount > 0 && <span className="text-ink/40 text-xs">{wishlistCount}</span>}
+          </Link>
+
+          <Link
+            href="/login"
+            onClick={closeMenu}
+            className={`sm:hidden flex items-center gap-3 py-2.5 ${linkHover}`}
+          >
+            <User size={18} /> Account
+          </Link>
         </nav>
       )}
 

@@ -8,8 +8,8 @@ const inputClass =
 
 const contactDetails = [
   { icon: Mail, label: "hello@nottales.com" },
-  { icon: Phone, label: "+1 (555) 012-3456" },
-  { icon: MapPin, label: "6363 Forest St, Aberdeen, New Mexico" },
+  { icon: Phone, label: "09011292027" },
+  { icon: MapPin, label: "Abuja, Unah Street Phase 1" },
 ];
 
 export default function ContactPage() {
