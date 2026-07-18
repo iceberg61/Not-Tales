@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useCartStore } from "@/lib/store/cartStore";
+import { formatNaira } from "@/lib/currency";
 
 const SHIPPING_FEE = 8;
 
@@ -135,7 +136,7 @@ export default function CheckoutPage() {
                   <p className="font-medium leading-tight">{item.name}</p>
                   <p className="text-ink/50">{item.size} · Qty {item.quantity}</p>
                 </div>
-                <span className="text-sm font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                <span className="text-sm font-medium">{formatNaira(item.price * item.quantity)}</span>
               </div>
             ))}
           </div>
@@ -143,15 +144,15 @@ export default function CheckoutPage() {
           <div className="space-y-3 text-sm mt-6 border-t border-ink/10 pt-4">
             <div className="flex justify-between text-ink/60">
               <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>{formatNaira(subtotal)}</span>
             </div>
             <div className="flex justify-between text-ink/60">
               <span>Shipping</span>
-              <span>${SHIPPING_FEE.toFixed(2)}</span>
+              <span>{formatNaira(SHIPPING_FEE)}</span>
             </div>
             <div className="border-t border-ink/10 pt-3 flex justify-between font-semibold text-base">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>{formatNaira(total)}</span>
             </div>
           </div>
 

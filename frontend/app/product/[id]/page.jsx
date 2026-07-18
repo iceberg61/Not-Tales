@@ -1,8 +1,20 @@
-export default function ProductDetailPage() {
-  return (
-    <section className="max-w-7xl mx-auto px-6 py-16">
-      <h1 className="text-2xl font-display">Product Detail — single product view, sizes, colors, reviews</h1>
-      <p className="text-ink/60 mt-2">Scaffold placeholder — to be built out in the styling pass.</p>
-    </section>
-  );
+import { notFound } from "next/navigation";
+import { allProducts } from "@/lib/mockData";
+import { buildMetadata } from "@/components/SEO";
+import ProductDetailClient from "./ProductDetailClient";
+
+export function generateMetadata({ params }) {
+  const product = allProducts.find((p) => p.slug === params.id);
+  if (!product) return buildMetadata({ title: "Product not found" });
+  return buildMetadata({
+    title: product.name,
+    description: product.description,
+    image: product.image,
+  });
+}
+
+export default function ProductDetailPage({ params }) {
+  const product = allProducts.find((p) => p.slug === params.id);
+  if (!product) notFound();
+  return <ProductDetailClient product={product} />;
 }

@@ -1,7 +1,11 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Search, ShoppingCart, User, Menu, X } from "lucide-react";
+import { Search, ShoppingCart, User, Heart, Menu, X } from "lucide-react";
+import { useCartStore } from "@/lib/store/cartStore";
+import { useWishlistStore } from "@/lib/store/wishlistStore";
+import CartDrawer from "@/components/CartDrawer";
+import SearchModal from "@/components/SearchModal";
 
 const links = [
   { href: "/shop", label: "Shop" },
@@ -21,7 +25,11 @@ function NavLinks({ className, onLinkClick }) {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const closeMenu = () => setOpen(false);
+  const itemCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
+  const wishlistCount = useWishlistStore((s) => s.ids.length);
 
   return (
     <header className="border-b border-ink/10 bg-cream sticky top-0 z-40">
@@ -36,12 +44,33 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3 md:gap-5">
-          <button aria-label="Search" className={`hidden sm:block ${linkHover}`}>
+          <button
+            aria-label="Search"
+            onClick={() => setSearchOpen(true)}
+            className={`hidden sm:block ${linkHover}`}
+          >
             <Search size={20} />
           </button>
-          <Link href="/cart" aria-label="Cart" className={linkHover}>
-            <ShoppingCart size={20} />
+          <Link href="/wishlist" aria-label="Wishlist" className={`relative ${linkHover}`}>
+            <Heart size={20} />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-brown-dark text-cream text-[10px] flex items-center justify-center">
+                {wishlistCount}
+              </span>
+            )}
           </Link>
+          <button
+            aria-label="Cart"
+            onClick={() => setCartOpen(true)}
+            className={`relative ${linkHover}`}
+          >
+            <ShoppingCart size={20} />
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-brown-dark text-cream text-[10px] flex items-center justify-center">
+                {itemCount}
+              </span>
+            )}
+          </button>
           <Link href="/login" aria-label="Account" className={linkHover}>
             <User size={20} />
           </Link>
@@ -56,13 +85,19 @@ export default function Navbar() {
           <NavLinks className="py-1" onLinkClick={closeMenu} />
           <button
             className={`sm:hidden flex items-center gap-3 py-1 text-left ${linkHover}`}
-            onClick={closeMenu}
+            onClick={() => {
+              closeMenu();
+              setSearchOpen(true);
+            }}
           >
             <Search size={20} />
             <span>Search</span>
           </button>
         </nav>
       )}
+
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }

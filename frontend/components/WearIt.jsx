@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { lookbook } from "@/lib/mockData";
 
 const AUTOPLAY_DELAY_MS = 4000;
@@ -61,9 +62,12 @@ export default function WearIt() {
             Look smart and stay comfortable. Clothes for the way you work now.
           </p>
         </div>
-        <button className="self-end md:self-auto bg-ink text-cream rounded-pill px-5 py-2 md:px-6 md:py-2.5 text-xs md:text-sm font-medium hover:bg-brown-dark transition-colors">
+        <Link
+          href="/experience"
+          className="self-end md:self-auto bg-ink text-cream rounded-pill px-5 py-2 md:px-6 md:py-2.5 text-xs md:text-sm font-medium hover:bg-brown-dark transition-colors"
+        >
           See more
-        </button>
+        </Link>
       </div>
 
       <div
@@ -94,11 +98,9 @@ export default function WearIt() {
           ))}
         </div>
 
-        
         <div className="pointer-events-none absolute top-0 right-0 h-full w-16 md:w-24 bg-gradient-to-l from-cream via-cream/60 to-transparent backdrop-blur-[2px]" />
       </div>
 
-    
       <div className="flex items-center justify-center gap-2 mt-5">
         {lookbook.map((_, i) => (
           <button

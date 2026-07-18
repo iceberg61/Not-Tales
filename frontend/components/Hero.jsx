@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Tag, Award, Truck } from "lucide-react";
 import { infoStrip } from "@/lib/mockData";
 
@@ -58,9 +59,12 @@ export default function Hero() {
             </p>
 
             <div>
-              <button className="bg-cream text-ink rounded-full px-10 py-2 font-medium hover:bg-brown-dark hover:text-cream transition-colors text-lg">
+              <Link
+                href="/shop"
+                className="inline-block bg-cream text-ink rounded-full px-10 py-2 font-medium hover:bg-brown-dark hover:text-cream transition-colors text-lg"
+              >
                 Explore
-              </button>
+              </Link>
             </div>
           </div>
 

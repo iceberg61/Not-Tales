@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/lib/store/cartStore";
+import { formatNaira } from "@/lib/currency";
 
 const SHIPPING_FEE = 8;
 
@@ -85,7 +86,7 @@ export default function CartPage() {
                       <Plus size={14} />
                     </button>
                   </div>
-                  <span className="font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="font-semibold">{formatNaira(item.price * item.quantity)}</span>
                 </div>
               </div>
             </div>
@@ -98,15 +99,15 @@ export default function CartPage() {
           <div className="space-y-3 text-sm">
             <div className="flex justify-between text-ink/60">
               <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>{formatNaira(subtotal)}</span>
             </div>
             <div className="flex justify-between text-ink/60">
               <span>Shipping</span>
-              <span>${SHIPPING_FEE.toFixed(2)}</span>
+              <span>{formatNaira(SHIPPING_FEE)}</span>
             </div>
             <div className="border-t border-ink/10 pt-3 flex justify-between font-semibold text-base">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>{formatNaira(total)}</span>
             </div>
           </div>
 
