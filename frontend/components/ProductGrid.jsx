@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
-import { featuredProduct, summerCollection } from "@/lib/mockData";
+import { featuredProduct } from "@/lib/mockData";
+import api from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import QuickView from "@/components/QuickView";
 
@@ -106,6 +107,14 @@ function FeaturedSpotlight() {
 
 function SummerGrid() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    api
+      .get("/products", { params: { sort: "featured", limit: 4 } })
+      .then(({ data }) => setProducts(data.products))
+      .catch(() => setProducts([]));
+  }, []);
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-8 md:px-6 md:py-12">
@@ -123,7 +132,7 @@ function SummerGrid() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-        {summerCollection.map((item) => (
+        {products.map((item) => (
           <ProductCard key={item.id} product={item} onQuickView={setQuickViewProduct} />
         ))}
       </div>

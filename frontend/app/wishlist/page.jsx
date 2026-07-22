@@ -1,22 +1,41 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { allProducts } from "@/lib/mockData";
+import api from "@/lib/api";
 import { useWishlistStore } from "@/lib/store/wishlistStore";
 import ProductCard from "@/components/ProductCard";
 import QuickView from "@/components/QuickView";
+import RequireAuth from "@/components/RequireAuth";
 
-export default function WishlistPage() {
+function WishlistContent() {
   const { ids } = useWishlistStore();
-  const saved = allProducts.filter((p) => ids.includes(p.id));
+  const [saved, setSaved] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+
+  useEffect(() => {
+    if (ids.length === 0) {
+      setSaved([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    // No batch "get by ids" endpoint yet — catalog is small enough that
+    // fetching everything and filtering client-side is fine for now.
+    // Worth adding a dedicated endpoint if the catalog grows much larger.
+    api
+      .get("/products", { params: { limit: 100 } })
+      .then(({ data }) => setSaved(data.products.filter((p) => ids.includes(p.id))))
+      .catch(() => setSaved([]))
+      .finally(() => setLoading(false));
+  }, [ids]);
 
   return (
     <section className="max-w-7xl mx-auto px-6 py-16">
       <h1 className="font-display text-3xl font-bold mb-2">Wishlist</h1>
-      <p className="text-ink/50 text-sm mb-10">{saved.length} saved items</p>
+      <p className="text-ink/50 text-sm mb-10">{loading ? "Loading..." : `${saved.length} saved items`}</p>
 
-      {saved.length === 0 ? (
+      {!loading && saved.length === 0 ? (
         <div className="text-center py-16">
           <p className="text-ink/60">Nothing saved yet — tap the heart on any product to add it here.</p>
           <Link
@@ -36,5 +55,13 @@ export default function WishlistPage() {
 
       <QuickView product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </section>
+  );
+}
+
+export default function WishlistPage() {
+  return (
+    <RequireAuth>
+      <WishlistContent />
+    </RequireAuth>
   );
 }

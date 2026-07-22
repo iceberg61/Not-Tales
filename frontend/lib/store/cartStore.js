@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { cartSeed } from "@/lib/mockData";
 
 // Cart items are matched by id + size + color, since the same product
 // in a different size/color counts as a separate line item.
@@ -10,17 +9,16 @@ const sameLine = (a, b) =>
 export const useCartStore = create(
   persist(
     (set) => ({
-      // Seeded with demo items so Cart/Checkout aren't empty during the styling
-      // pass — swap to [] once product pages wire a real "Add to cart" action.
-      items: cartSeed,
+      items: [],
 
       addItem: (item) =>
         set((state) => {
           const existing = state.items.find((i) => sameLine(i, item));
           if (existing) {
+            const cap = existing.stock ?? Infinity;
             return {
               items: state.items.map((i) =>
-                sameLine(i, item) ? { ...i, quantity: i.quantity + item.quantity } : i
+                sameLine(i, item) ? { ...i, quantity: Math.min(cap, i.quantity + item.quantity) } : i
               ),
             };
           }
@@ -34,13 +32,19 @@ export const useCartStore = create(
 
       updateQuantity: (id, size, color, quantity) =>
         set((state) => ({
-          items: state.items.map((i) =>
-            sameLine(i, { id, size, color }) ? { ...i, quantity: Math.max(1, quantity) } : i
-          ),
+          items: state.items.map((i) => {
+            if (!sameLine(i, { id, size, color })) return i;
+            const cap = i.stock ?? Infinity;
+            return { ...i, quantity: Math.min(cap, Math.max(1, quantity)) };
+          }),
         })),
 
       clearCart: () => set({ items: [] }),
     }),
-    { name: "not-tales-cart" }
+    {
+      name: "not-tales-cart",
+      version: 1,
+      migrate: (persistedState, version) => (version < 1 ? { items: [] } : persistedState),
+    }
   )
 );

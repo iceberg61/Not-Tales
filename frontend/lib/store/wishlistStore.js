@@ -1,13 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { wishlistSeed } from "@/lib/mockData";
 
 export const useWishlistStore = create(
   persist(
     (set, get) => ({
-      // Seeded with demo product ids — swap to [] once "Save to wishlist"
-      // is wired on the product pages.
-      ids: wishlistSeed,
+      ids: [],
 
       toggle: (id) =>
         set((state) => ({
@@ -18,6 +15,13 @@ export const useWishlistStore = create(
 
       isSaved: (id) => get().ids.includes(id),
     }),
-    { name: "not-tales-wishlist" }
+    {
+      name: "not-tales-wishlist",
+      // Bumped from the unversioned build that shipped with seeded demo
+      // ids — anyone whose browser still has that old persisted state gets
+      // it reset to empty automatically instead of carrying stale entries.
+      version: 1,
+      migrate: (persistedState, version) => (version < 1 ? { ids: [] } : persistedState),
+    }
   )
 );

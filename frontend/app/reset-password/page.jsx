@@ -3,17 +3,17 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
-import { Lock } from "lucide-react";
+import { Mail, Hash, Lock } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import AuthInput from "@/components/AuthInput";
 
-// Reads ?token=... from the reset link sent by email (see emailService.sendPasswordResetEmail).
-// Wrapped in Suspense because useSearchParams requires it in the App Router.
+// Reads ?email=... to prefill the field when arriving from Forgot Password —
+// still fully usable on its own if someone navigates here directly.
 function ResetPasswordForm() {
   const router = useRouter();
-  const token = useSearchParams().get("token");
+  const prefillEmail = useSearchParams().get("email") || "";
 
-  const [form, setForm] = useState({ password: "", confirmPassword: "" });
+  const [form, setForm] = useState({ email: prefillEmail, otp: "", password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,8 +24,8 @@ function ResetPasswordForm() {
     e.preventDefault();
     setError("");
 
-    if (!token) {
-      setError("This reset link is invalid or has expired.");
+    if (!form.email || !form.otp) {
+      setError("Email and reset code are required.");
       return;
     }
     if (form.password.length < 8) {
@@ -39,11 +39,11 @@ function ResetPasswordForm() {
 
     setLoading(true);
     try {
-      // Backend endpoint isn't live yet — wired for Phase 3 (authController.resetPassword).
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/reset-password/${token}`,
-        { password: form.password }
-      );
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/reset-password`, {
+        email: form.email,
+        otp: form.otp,
+        password: form.password,
+      });
       router.push("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong. Please try again.");
@@ -54,8 +54,8 @@ function ResetPasswordForm() {
 
   return (
     <AuthLayout
-      title="Set a new password"
-      subtitle="Choose a new password for your account."
+      title="Enter your reset code"
+      subtitle="Check your email for a 6-digit code, then set a new password."
       footer={
         <Link href="/login" className="font-medium text-brown-dark hover:underline">
           Back to login
@@ -68,6 +68,27 @@ function ResetPasswordForm() {
             {error}
           </p>
         )}
+
+        <AuthInput
+          icon={Mail}
+          label="Email"
+          type="email"
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="you@example.com"
+        />
+
+        <AuthInput
+          icon={Hash}
+          label="6-digit code"
+          name="otp"
+          inputMode="numeric"
+          maxLength={6}
+          value={form.otp}
+          onChange={handleChange}
+          placeholder="123456"
+        />
 
         <AuthInput
           icon={Lock}

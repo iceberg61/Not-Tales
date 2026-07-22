@@ -4,10 +4,11 @@ import Link from "next/link";
 import { Minus, Plus, Trash2, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/lib/store/cartStore";
 import { formatNaira } from "@/lib/currency";
+import RequireAuth from "@/components/RequireAuth";
 
 const SHIPPING_FEE = 8;
 
-export default function CartPage() {
+function CartContent() {
   const { items, updateQuantity, removeItem } = useCartStore();
 
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
@@ -80,7 +81,8 @@ export default function CartPage() {
                     <span className="text-sm font-medium w-4 text-center">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
-                      className="w-7 h-7 flex items-center justify-center hover:text-brown-dark"
+                      disabled={item.quantity >= (item.stock ?? Infinity)}
+                      className="w-7 h-7 flex items-center justify-center hover:text-brown-dark disabled:opacity-30 disabled:hover:text-inherit"
                       aria-label="Increase quantity"
                     >
                       <Plus size={14} />
@@ -88,6 +90,9 @@ export default function CartPage() {
                   </div>
                   <span className="font-semibold">{formatNaira(item.price * item.quantity)}</span>
                 </div>
+                {item.stock != null && item.quantity >= item.stock && (
+                  <p className="text-xs text-mustard mt-2">Max stock reached</p>
+                )}
               </div>
             </div>
           ))}
@@ -120,5 +125,13 @@ export default function CartPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function CartPage() {
+  return (
+    <RequireAuth>
+      <CartContent />
+    </RequireAuth>
   );
 }

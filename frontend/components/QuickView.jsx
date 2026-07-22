@@ -16,12 +16,14 @@ export default function QuickView({ product, onClose }) {
   const handleAdd = () => {
     addItem({
       id: product.id,
+      slug: product.slug,
       name: product.name,
       image: product.image,
       price: product.price,
       size,
       color,
       quantity: 1,
+      stock: product.stock,
     });
     onClose();
   };

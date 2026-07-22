@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Search, ShoppingCart, User, Heart, Menu, X } from "lucide-react";
+import { Search, ShoppingCart, User, Heart, Menu, X, ShieldCheck } from "lucide-react";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useWishlistStore } from "@/lib/store/wishlistStore";
 import CartDrawer from "@/components/CartDrawer";
@@ -30,9 +30,22 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const closeMenu = () => setOpen(false);
   const itemCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
   const wishlistCount = useWishlistStore((s) => s.ids.length);
+
+  // Read after mount, not during render — localStorage isn't available
+  // during SSR and reading it at render time would cause a hydration
+  // mismatch between server and client markup.
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("user") || "null");
+      setIsAdmin(stored?.role === "admin");
+    } catch {
+      setIsAdmin(false);
+    }
+  }, []);
 
   return (
     <header className="border-b border-ink/10 bg-cream sticky top-0 z-40">
@@ -44,6 +57,11 @@ export default function Navbar() {
 
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
           <NavLinks className={linkHover} />
+          {isAdmin && (
+            <Link href="/admin" className={`flex items-center gap-1.5 ${linkHover}`}>
+              <ShieldCheck size={15} /> Admin
+            </Link>
+          )}
         </nav>
 
         {/* Icon cluster — full set on desktop (with a divider separating
@@ -96,6 +114,11 @@ export default function Navbar() {
         <nav className="md:hidden border-t border-ink/10 bg-cream px-4 py-6 flex flex-col gap-1 text-sm font-medium">
           <div className="flex flex-col gap-1 pb-4 mb-4 border-b border-ink/10">
             <NavLinks className={`py-2.5 ${linkHover}`} onLinkClick={closeMenu} />
+            {isAdmin && (
+              <Link href="/admin" onClick={closeMenu} className={`flex items-center gap-3 py-2.5 ${linkHover}`}>
+                <ShieldCheck size={18} /> Admin
+              </Link>
+            )}
           </div>
 
           <button

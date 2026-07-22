@@ -23,8 +23,6 @@ export default function ForgotPasswordPage() {
 
     setLoading(true);
     try {
-      // Backend endpoint isn't live yet — wired for Phase 3
-      // (authController.forgotPassword + emailService.sendPasswordResetEmail).
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/forgot-password`, { email });
       setSent(true);
     } catch (err) {
@@ -38,16 +36,22 @@ export default function ForgotPasswordPage() {
     return (
       <AuthLayout
         title="Check your email"
-        subtitle={`If an account exists for ${email}, a reset link is on its way.`}
+        subtitle={`If an account exists for ${email}, we've sent a 6-digit code.`}
         footer={
           <Link href="/login" className="font-medium text-brown-dark hover:underline">
             Back to login
           </Link>
         }
       >
-        <p className="text-sm text-ink/50 text-center">
+        <p className="text-sm text-ink/50 text-center mb-6">
           Didn&apos;t get it? Check your spam folder, or try again in a minute.
         </p>
+        <Link
+          href={`/reset-password?email=${encodeURIComponent(email)}`}
+          className="block w-full text-center bg-ink text-cream rounded-pill py-3 font-medium hover:bg-brown-dark transition-colors"
+        >
+          I have my code
+        </Link>
       </AuthLayout>
     );
   }
@@ -55,7 +59,7 @@ export default function ForgotPasswordPage() {
   return (
     <AuthLayout
       title="Forgot your password?"
-      subtitle="Enter your email and we'll send you a reset link."
+      subtitle="Enter your email and we'll send you a 6-digit reset code."
       footer={
         <>
           Remembered it?{" "}
@@ -87,7 +91,7 @@ export default function ForgotPasswordPage() {
           disabled={loading}
           className="w-full bg-ink text-cream rounded-pill py-3 font-medium hover:bg-brown-dark transition-colors disabled:opacity-50"
         >
-          {loading ? "Sending..." : "Send reset link"}
+          {loading ? "Sending..." : "Send code"}
         </button>
       </form>
     </AuthLayout>

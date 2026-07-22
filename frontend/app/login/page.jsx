@@ -32,6 +32,7 @@ export default function LoginPage() {
         form
       );
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
       window.location.href = "/";
     } catch (err) {
       setError(

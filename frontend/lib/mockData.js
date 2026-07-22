@@ -12,30 +12,25 @@ export const collections = [
   {
     name: "Jeans",
     count: "1200+ Products",
-    image:
-      "/images/IMG-20260718-WA0019.jpg",
+    image: "/images/IMG-20260718-WA0019.jpg",
   },
   {
     name: "Clothes",
     count: "2500+ Products",
-    image:
-      "/images/IMG-20260718-WA0058.jpg",
+    image: "/images/IMG-20260718-WA0058.jpg",
   },
   {
     name: "Caps",
     count: "800+ Products",
-    image:
-      "https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&q=80",
   },
 ];
 
 export const featuredProduct = {
   name: "Payday Sale Now",
   description: "Spend minimal ₦100 get 30% off voucher code for your next purchase",
-  image:
-  "/images/IMG-20260718-WA0064.jpg",
-  modelImage:
-  "/images/IMG-20260718-WA0105.jpg",
+  image: "/images/IMG-20260718-WA0064.jpg",
+  modelImage: "/images/IMG-20260718-WA0105.jpg",
   colors: ["#2E2E2E", "#4FA3A3", "#E8A33D"],
   sizes: ["S", "M", "L", "XL"],
   rating: 4.9,
@@ -101,30 +96,10 @@ export const lookbook = [
   "/images/IMG-20260718-WA0119.jpg",
 ];
 
-// Seeds the cart store so Cart/Checkout have something to display before
-// real "Add to cart" wiring exists on the product pages (Phase 2/3).
-export const cartSeed = [
-  {
-    id: "p1",
-    name: "100% cotton long sleeve shirt",
-    image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80",
-    price: 140,
-    size: "M",
-    color: "#2E2E2E",
-    quantity: 1,
-  },
-  {
-    id: "p3",
-    name: "100% cotton long sleeve shirt",
-    image: "https://images.unsplash.com/photo-1485231183945-fffde7cc051e?w=400&q=80",
-    price: 150,
-    size: "L",
-    color: "#7BA7C9",
-    quantity: 2,
-  },
-];
-
-// Full catalog — backs the Shop grid, Product Detail, QuickView, and Wishlist.
+// Full catalog — kept as a readable reference for the seed script, but no
+// longer read directly by Shop/Product Detail/Wishlist (those fetch from
+// the live API since Phase G). Update backend/src/scripts/seedProducts.js
+// + re-run `npm run seed` to change what actually shows on those pages.
 export const allProducts = [
   {
     id: "p1", slug: "cotton-long-sleeve-shirt-charcoal",
@@ -240,10 +215,6 @@ export const allProducts = [
 
 export const productCategories = ["all", "jeans", "clothes", "caps"];
 
-// Seeds the wishlist store — swap to [] once "Save to wishlist" is wired
-// on the product pages.
-export const wishlistSeed = ["p3", "p6", "p8"];
-
 // Order history — backs My Orders, Order Tracking, and Order Confirmation.
 export const orders = [
   {
@@ -307,4 +278,3 @@ export const adminUsers = [
   { id: "u3", name: "Grace Okoro", email: "grace@example.com", joined: "2026-03-19", orders: 11, role: "customer" },
   { id: "u4", name: "Not Tales Admin", email: "admin@nottales.com", joined: "2025-11-01", orders: 0, role: "admin" },
 ];
-

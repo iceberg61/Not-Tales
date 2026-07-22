@@ -59,7 +59,8 @@ export default function CartDrawer({ open, onClose }) {
                     <span className="text-xs font-medium w-3 text-center">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
-                      className="w-5 h-5 flex items-center justify-center"
+                      disabled={item.quantity >= (item.stock ?? Infinity)}
+                      className="w-5 h-5 flex items-center justify-center disabled:opacity-30"
                       aria-label="Increase quantity"
                     >
                       <Plus size={11} />
@@ -67,6 +68,9 @@ export default function CartDrawer({ open, onClose }) {
                   </div>
                   <span className="text-sm font-semibold">{formatNaira(item.price * item.quantity)}</span>
                 </div>
+                {item.stock != null && item.quantity >= item.stock && (
+                  <p className="text-[11px] text-mustard mt-1">Max stock reached</p>
+                )}
               </div>
               <button
                 onClick={() => removeItem(item.id, item.size, item.color)}

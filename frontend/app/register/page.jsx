@@ -1,12 +1,15 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { User, Mail, Lock } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import AuthInput from "@/components/AuthInput";
 
-export default function RegisterPage() {
+function RegisterForm() {
+  const redirect = useSearchParams().get("redirect") || "/";
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -43,7 +46,6 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      // Backend endpoint isn't live yet — this call is wired and ready for Phase 3.
       const { data } = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
         {
@@ -53,7 +55,8 @@ export default function RegisterPage() {
         }
       );
       localStorage.setItem("token", data.token);
-      window.location.href = "/";
+      localStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = redirect;
     } catch (err) {
       setError(
         err.response?.data?.message || "Something went wrong. Please try again."
@@ -70,7 +73,7 @@ export default function RegisterPage() {
       footer={
         <>
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-brown-dark hover:underline">
+          <Link href={`/login?redirect=${encodeURIComponent(redirect)}`} className="font-medium text-brown-dark hover:underline">
             Log in
           </Link>
         </>
@@ -141,5 +144,13 @@ export default function RegisterPage() {
         </button>
       </form>
     </AuthLayout>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
   );
 }

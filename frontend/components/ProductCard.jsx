@@ -26,12 +26,14 @@ export default function ProductCard({ product, onQuickView }) {
     await new Promise((resolve) => setTimeout(resolve, 300));
     addItem({
       id: product.id,
+      slug: product.slug,
       name: product.name,
       image: product.image,
       price: product.price,
       size: product.sizes?.[0] || "One size",
       color: product.colors?.[0],
       quantity: 1,
+      stock: product.stock,
     });
     setCartStatus("added");
     setTimeout(() => setCartStatus("idle"), 2000);

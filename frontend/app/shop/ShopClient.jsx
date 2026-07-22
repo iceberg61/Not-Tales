@@ -1,10 +1,12 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
-import { allProducts, productCategories } from "@/lib/mockData";
+import { productCategories } from "@/lib/mockData";
+import api from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import QuickView from "@/components/QuickView";
+import RequireAuth from "@/components/RequireAuth";
 
 const SORTS = [
   { value: "featured", label: "Featured" },
@@ -28,29 +30,31 @@ export default function ShopClient() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 
-  const filtered = useMemo(() => {
-    let list = allProducts.filter((p) => category === "all" || p.category === category);
-    if (search.trim()) {
-      list = list.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
-    }
-    switch (sort) {
-      case "price-asc":
-        list = [...list].sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        list = [...list].sort((a, b) => b.price - a.price);
-        break;
-      case "rating":
-        list = [...list].sort((a, b) => b.rating - a.rating);
-        break;
-      default:
-        break;
-    }
-    return list;
-  }, [category, search, sort]);
+  const [products, setProducts] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-  const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  // Debounced so typing doesn't fire a request per keystroke.
+  useEffect(() => {
+    setLoading(true);
+    setError("");
+
+    const timeout = setTimeout(() => {
+      api
+        .get("/products", { params: { category, search: search.trim() || undefined, sort, page, limit: PER_PAGE } })
+        .then(({ data }) => {
+          setProducts(data.products);
+          setTotalPages(data.pagination.totalPages);
+          setTotal(data.pagination.total);
+        })
+        .catch(() => setError("Couldn't load products. Is the backend running?"))
+        .finally(() => setLoading(false));
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [category, search, sort, page]);
 
   const handleCategoryChange = (c) => {
     setCategory(c);
@@ -58,10 +62,11 @@ export default function ShopClient() {
   };
 
   return (
+    <RequireAuth>
     <section className="max-w-7xl mx-auto px-6 py-12">
       <div className="mb-8">
         <h1 className="font-display text-3xl font-bold">Shop</h1>
-        <p className="text-ink/50 text-sm mt-1">{filtered.length} products</p>
+        <p className="text-ink/50 text-sm mt-1">{loading ? "Loading..." : `${total} products`}</p>
       </div>
 
       {/* Search + sort + mobile filter toggle */}
@@ -84,7 +89,10 @@ export default function ShopClient() {
           </button>
           <select
             value={sort}
-            onChange={(e) => setSort(e.target.value)}
+            onChange={(e) => {
+              setSort(e.target.value);
+              setPage(1);
+            }}
             className="bg-cream-2 rounded-pill px-4 py-2.5 text-sm font-medium outline-none"
           >
             {SORTS.map((s) => (
@@ -125,11 +133,15 @@ export default function ShopClient() {
 
         {/* Product grid */}
         <div>
-          {paged.length === 0 ? (
+          {error ? (
+            <p className="text-red-600 text-sm py-16 text-center">{error}</p>
+          ) : loading ? (
+            <p className="text-ink/50 text-sm py-16 text-center">Loading products...</p>
+          ) : products.length === 0 ? (
             <p className="text-ink/50 text-sm py-16 text-center">No products match your filters.</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-              {paged.map((product) => (
+              {products.map((product) => (
                 <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
               ))}
             </div>
@@ -155,6 +167,7 @@ export default function ShopClient() {
 
       <QuickView product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </section>
+    </RequireAuth>
   );
 }
 

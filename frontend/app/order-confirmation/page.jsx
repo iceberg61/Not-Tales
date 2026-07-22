@@ -1,24 +1,49 @@
 "use client";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
-import { orders } from "@/lib/mockData";
+import api from "@/lib/api";
 import { formatNaira } from "@/lib/currency";
 
 function OrderConfirmationContent() {
   const orderId = useSearchParams().get("order");
-  // Falls back to the most recent mock order for demo purposes — once the
-  // backend exists, checkout will redirect here with a real ?order=<id>.
-  const order = orders.find((o) => o.id === orderId) || orders[orders.length - 1];
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!orderId) {
+      setError("No order specified.");
+      setLoading(false);
+      return;
+    }
+    api
+      .get(`/orders/${orderId}`)
+      .then(({ data }) => setOrder(data.order))
+      .catch(() => setError("Couldn't load that order."))
+      .finally(() => setLoading(false));
+  }, [orderId]);
+
+  if (loading) return <p className="text-center py-24 text-ink/50 text-sm">Loading...</p>;
+  if (error || !order) {
+    return (
+      <section className="max-w-2xl mx-auto px-6 py-20 text-center">
+        <p className="text-red-600 text-sm">{error || "Order not found."}</p>
+        <Link href="/shop" className="inline-block mt-6 text-brown-dark underline text-sm">
+          Back to shop
+        </Link>
+      </section>
+    );
+  }
 
   return (
     <section className="max-w-2xl mx-auto px-6 py-20 text-center">
       <CheckCircle2 size={48} className="text-brown-dark mx-auto mb-6" />
       <h1 className="font-display text-3xl font-bold">Thank you for your order!</h1>
       <p className="text-ink/60 mt-3">
-        Your order <span className="font-medium text-ink">{order.id}</span> has been placed and is
+        Your order <span className="font-medium text-ink">#{order._id.slice(-6).toUpperCase()}</span> has been placed and is
         being processed. We&apos;ll email you as it ships.
       </p>
 

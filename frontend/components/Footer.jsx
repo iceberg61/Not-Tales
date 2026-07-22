@@ -11,13 +11,11 @@ const categories = [
   { label: "Others", category: "all" },
 ];
 
-// FAQ and Blog don't have dedicated pages yet — routed to the closest
-// existing page (Contact, Experience) until those are built.
 const importantLinks = [
   { label: "Shop Page", href: "/shop" },
-  { label: "FAQ", href: "/contact" },
+  { label: "FAQ", href: "/faq" },
   { label: "About Shop", href: "/experience" },
-  { label: "Blog", href: "/experience" },
+  { label: "Blog", href: "/blog" },
 ];
 
 // Placeholder handles — swap for the real profile URLs when they exist.
