@@ -7,7 +7,7 @@ cloudinary.config({
 });
 
 // TODO (Phase 4): upload_stream from multer buffer
-exports.uploadBuffer = (buffer, folder = "fashion-store") => {
+exports.uploadBuffer = (buffer, folder = "not-tales") => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream({ folder }, (err, result) => {
       if (err) return reject(err);
