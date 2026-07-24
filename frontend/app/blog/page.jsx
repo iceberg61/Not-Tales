@@ -15,7 +15,7 @@ export default function BlogPage() {
       </div>
       <h1 className="font-display text-3xl font-bold">Blog — Coming soon</h1>
       <p className="text-ink/60 mt-3 max-w-md mx-auto">
-        Style notes, drop announcements, and behind-the-scenes — we&apos;re just getting started here.
+        Style notes, drop-announcements, and behind-the-scenes — we&apos;re just getting started here.
       </p>
       <Link
         href="/shop"
