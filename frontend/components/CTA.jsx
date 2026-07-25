@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { MessageCircle, Instagram } from "lucide-react";
+import { MessageCircle } from "lucide-react";
+import TikTokIcon from "@/components/icons/TikTokIcon";
 
 // A custom illustration replaces the old stock photo — a rotated "ticket"
 // badge with a perforated edge, confetti dots, and a couple of stitched
@@ -56,7 +57,7 @@ export default function CTA() {
           </p>
           <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
             <Link
-              href="https://wa.me/2340000000000"
+              href="https://wa.me/+2349152472137"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 bg-cream text-ink rounded-pill px-5 py-2.5 text-sm font-medium hover:bg-white transition-colors"
@@ -64,12 +65,12 @@ export default function CTA() {
               <MessageCircle size={16} /> Chat on WhatsApp
             </Link>
             <Link
-              href="https://instagram.com/yourbrand"
+              href="https://www.tiktok.com/@not_tales?_r=1&_t=ZS-98Jl5SW37zA"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center sm:justify-start gap-2 text-cream text-sm font-medium hover:text-cream/80 transition-colors"
             >
-              <Instagram size={16} /> Follow us
+              <TikTokIcon size={16} /> Follow us
             </Link>
           </div>
         </div>

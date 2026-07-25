@@ -3,7 +3,7 @@
 export const brandLogos = ["H&M", "Amazon", "OBEY", "Levi's"];
 
 export const infoStrip = [
-  { icon: "tag", title: "Get ₦3 off", subtitle: "Your first order" },
+  { icon: "tag", title: "Get 10% off", subtitle: "Your first order" },
   { icon: "award", title: "Premium quality", subtitle: "Guaranteed fabric" },
   { icon: "truck", title: "Shipping info", subtitle: "Fast & reliable" },
 ];
@@ -28,7 +28,7 @@ export const collections = [
 
 export const featuredProduct = {
   name: "Payday Sale Now",
-  description: "Spend minimal ₦100 get 30% off voucher code for your next purchase",
+  description: "Spend minimal ₦100 get 10% off voucher code for your next purchase",
   image: "/images/IMG-20260718-WA0064.jpg",
   modelImage: "/images/IMG-20260718-WA0105.jpg",
   colors: ["#2E2E2E", "#4FA3A3", "#E8A33D"],

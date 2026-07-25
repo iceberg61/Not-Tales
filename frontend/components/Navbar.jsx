@@ -52,7 +52,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <span className="w-6 h-6 rounded-full bg-brown-dark inline-block" />
-          <span className="font-display text-xl font-semibold">Not Tales</span>
+          <span className="font-display text-xl font-semibold"> NOT.TALES</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">

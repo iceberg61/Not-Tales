@@ -8,8 +8,8 @@ const inputClass =
 
 const contactDetails = [
   { icon: Mail, label: "hello@nottales.com" },
-  { icon: Phone, label: "09011292027" },
-  { icon: MapPin, label: "Abuja, Unah Street Phase 1" },
+  { icon: Phone, label: "+234 915 247 2137" },
+  { icon: MapPin, label: "Abuja, Nigeria" },
 ];
 
 export default function ContactPage() {

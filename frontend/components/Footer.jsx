@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Instagram, Twitter, Facebook } from "lucide-react";
+import TikTokIcon from "@/components/icons/TikTokIcon";
 
 // label = what's shown, category = the ?category= value passed to /shop.
 // "Shirt" maps to the "clothes" category since that's the real category value;
@@ -23,6 +24,7 @@ const socials = [
   { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
   { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
   { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+  { icon: TikTokIcon, href: "https://www.tiktok.com/@not_tales?_r=1&_t=ZS-98Jl5SW37zA", label: "TikTok" },
 ];
 
 export default function Footer() {
@@ -32,10 +34,10 @@ export default function Footer() {
         <div className="col-span-2 md:col-span-1">
           <div className="flex items-center gap-2">
             <span className="w-6 h-6 rounded-full bg-brown-dark inline-block" />
-            <span className="font-display text-xl font-semibold">Not Tales</span>
+            <span className="font-display text-xl font-semibold">NOT.TALES</span>
           </div>
           <p className="text-ink/50 text-sm mt-4 max-w-[200px]">
-            Abuja, Unah Street Phase 1
+            Abuja, Nigeria. <br />
           </p>
         </div>
 
@@ -89,7 +91,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-ink/10 py-6 text-center text-xs text-ink/40">
-        © {new Date().getFullYear()} Not Tales. All rights reserved.
+        © {new Date().getFullYear()}  NOT.TALES. All rights reserved.
       </div>
     </footer>
   );

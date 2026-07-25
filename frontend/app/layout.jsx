@@ -13,7 +13,7 @@ import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "Not Tales | Wear What's Real",
-  description: "Shop the latest men's, women's and kids' clothing collections.",
+  description: "Not - A clothing brand, its a lifestyle. Shop the latest jeans, clothes, and caps from Not Tales.",
 };
 
 export default function RootLayout({ children }) {
