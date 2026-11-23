@@ -34,7 +34,7 @@ export default function Footer() {
         <div className="col-span-2 md:col-span-1">
           <div className="flex items-center gap-2">
             <span className="w-6 h-6 rounded-full bg-brown-dark inline-block" />
-            <span className="font-display text-xl font-semibold">NOT.TALES</span>
+            <span className="font-display text-xl font-semibold">NOT•TALES</span>
           </div>
           <p className="text-ink/50 text-sm mt-4 max-w-[200px]">
             Abuja, Nigeria. <br />
@@ -91,7 +91,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-ink/10 py-6 text-center text-xs text-ink/40">
-        © {new Date().getFullYear()}  NOT.TALES. All rights reserved.
+        © {new Date().getFullYear()}  NOT•TALES. All rights reserved.
       </div>
     </footer>
   );

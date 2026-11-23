@@ -48,9 +48,9 @@ export default function Hero() {
           <div className="space-y-6">
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-tight text-cream max-w-xl">
               <span className="inline-block bg-brown-dark px-4 py-2 rounded-md -rotate-1">
-                NOT.TALES.
+                NOT•TALES.
               </span>{" "}
-              Wear what&apos;s real.
+              TELL NO TALES
             </h1>
 
             <p className="text-base md:text-xl text-cream/90 max-w-md">

@@ -5,7 +5,7 @@ import { lookbook } from "@/lib/mockData";
 
 export const metadata = buildMetadata({
   title: "Experience",
-  description: "The story and philosophy behind NOT.TALES.",
+  description: "The story and philosophy behind NOT•TALES.",
 });
 
 const values = [
@@ -19,7 +19,7 @@ export default function ExperiencePage() {
     <>
       <section className="max-w-3xl mx-auto px-6 py-16 sm:py-24 text-center">
         <h1 className="font-display text-3xl sm:text-5xl font-bold leading-tight">
-           NOT.TALES. Just what actually works.
+           NOT•TALES. Just what actually works.
         </h1>
         <p className="text-ink/60 mt-6 max-w-xl mx-auto">
           We don&apos;t design around a story — we design around how clothes hold up in

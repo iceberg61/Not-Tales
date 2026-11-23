@@ -12,8 +12,8 @@ import Footer from "@/components/Footer";
 
 
 export const metadata = {
-  title: "Not Tales | Wear What's Real",
-  description: "Not - A clothing brand, its a lifestyle. Shop the latest jeans, clothes, and caps from Not Tales.",
+  title: "NOT•TALES | TELL NO TALES",
+  description: "Not - A clothing brand, its a lifestyle. Shop the latest jeans, clothes, and caps from NOT•TALES.",
 };
 
 export default function RootLayout({ children }) {
