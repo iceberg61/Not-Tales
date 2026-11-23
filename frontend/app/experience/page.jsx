@@ -44,7 +44,7 @@ export default function ExperiencePage() {
             <Image
               key={i}
               src={src}
-              alt="Not Tales, worn"
+              alt="NOT•TALES, worn"
               width={280}
               height={340}
               className="rounded-xl object-cover w-full h-48 sm:h-64"

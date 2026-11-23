@@ -35,7 +35,7 @@ export default function Hero() {
           <Image
             key={bg.src}
             src={bg.src}
-            alt="Not Tales campaign"
+            alt="NOT•TALES campaign"
             fill
             priority
             className={`${bg.visibility} object-cover`}

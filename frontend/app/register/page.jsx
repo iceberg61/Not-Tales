@@ -69,7 +69,7 @@ function RegisterForm() {
   return (
     <AuthLayout
       title="Create your account"
-      subtitle="Join Not Tales for faster checkout and order tracking."
+      subtitle="Join NOT•TALES for faster checkout and order tracking."
       footer={
         <>
           Already have an account?{" "}

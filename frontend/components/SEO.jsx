@@ -5,8 +5,8 @@
 // Usage:
 //   export const metadata = buildMetadata({ title: "Shop", description: "..." });
 export function buildMetadata({ title, description, image } = {}) {
-  const fallbackDescription = "Shop the latest jeans, clothes, and caps from Not Tales.";
-  const fullTitle = title ? `${title} | Not Tales` : "Not Tales | Wear What's Real";
+  const fallbackDescription = "Shop the latest jeans, clothes, and caps from NOT•TALES.";
+  const fullTitle = title ? `${title} | NOT•TALES` : "NOT•TALES | Wear What's Real";
   const desc = description || fallbackDescription;
 
   return {

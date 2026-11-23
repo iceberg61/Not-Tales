@@ -46,7 +46,7 @@ export default function LoginPage() {
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Log in to continue shopping with Not Tales."
+      subtitle="Log in to continue shopping with NOT•TALES."
       footer={
         <>
           Don&apos;t have an account?{" "}

@@ -6,9 +6,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // setup, but Resend will only actually deliver those emails to the address
 // you signed up to Resend with (not arbitrary customer emails). Once you
 // verify your own domain in Resend's dashboard, set RESEND_FROM_EMAIL to
-// something like "Not Tales <no-reply@yourrealdomain.com>" and every
+// something like "NOT•TALES <no-reply@yourrealdomain.com>" and every
 // recipient works normally.
-const FROM = process.env.RESEND_FROM_EMAIL || "Not Tales <onboarding@resend.dev>";
+const FROM = process.env.RESEND_FROM_EMAIL || "NOT•TALES <onboarding@resend.dev>";
 // Where contact-form notifications go — set this in .env once you have a real inbox.
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "hello@yourdomain.com";
 
@@ -19,14 +19,14 @@ function emailWrapper(title, bodyHtml) {
     <div style="font-family: Arial, sans-serif; background:#F4EFE4; padding: 32px 16px;">
       <div style="max-width: 480px; margin: 0 auto; background:#ffffff; border-radius: 16px; overflow: hidden;">
         <div style="background:#4A3323; padding: 24px 32px;">
-          <span style="color:#F4EFE4; font-size: 20px; font-weight: 700;">Not Tales</span>
+          <span style="color:#F4EFE4; font-size: 20px; font-weight: 700;">NOT•TALES</span>
         </div>
         <div style="padding: 32px;">
           <h1 style="font-size: 20px; margin: 0 0 16px;">${title}</h1>
           ${bodyHtml}
         </div>
         <div style="padding: 20px 32px; background:#EDE6D6; font-size: 12px; color:#1A1410aa;">
-          © ${new Date().getFullYear()} Not Tales. All rights reserved.
+          © ${new Date().getFullYear()} NOT•TALES. All rights reserved.
         </div>
       </div>
     </div>
@@ -37,7 +37,7 @@ exports.sendWelcomeEmail = async (to, name) => {
   return resend.emails.send({
     from: FROM,
     to,
-    subject: "Welcome to Not Tales",
+    subject: "Welcome to NOT•TALES",
     html: emailWrapper(
       `Welcome, ${name}.`,
       `<p style="color:#1A1410cc; line-height:1.6;">Your account is ready. Browse the latest drops and enjoy faster checkout on every order.</p>`
@@ -119,5 +119,5 @@ exports.sendContactConfirmationEmail = async (to, name) => {
 };
 
 exports.sendNewsletterEmail = async (to, content) => {
-  return resend.emails.send({ from: FROM, to, subject: "Not Tales Newsletter", html: emailWrapper("Not Tales", content) });
+  return resend.emails.send({ from: FROM, to, subject: "NOT•TALES Newsletter", html: emailWrapper("NOT•TALES", content) });
 };

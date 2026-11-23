@@ -4,7 +4,7 @@ import { Newspaper } from "lucide-react";
 
 export const metadata = buildMetadata({
   title: "Blog",
-  description: "Stories from Not Tales — coming soon.",
+  description: "Stories from NOT•TALES — coming soon.",
 });
 
 export default function BlogPage() {

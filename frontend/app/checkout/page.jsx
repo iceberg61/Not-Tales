@@ -110,7 +110,7 @@ function CheckoutContent() {
           name: form.name,
         },
         customizations: {
-          title: "Not Tales",
+          title: "NOT•TALES",
           description: `Payment for order ${order._id}`,
         },
         callback: async (response) => {

@@ -7,7 +7,7 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
       <div className="w-full max-w-md">
         <Link href="/" className="flex items-center gap-2 justify-center mb-8">
           <span className="w-6 h-6 rounded-full bg-brown-dark inline-block" />
-          <span className="font-display text-xl font-semibold">Not Tales</span>
+          <span className="font-display text-xl font-semibold">NOT•TALES</span>
         </Link>
 
         <div className="bg-cream-2 rounded-3xl p-8 md:p-10 shadow-sm">

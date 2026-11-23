@@ -276,5 +276,5 @@ export const adminUsers = [
   { id: "u1", name: "Amara Chukwu", email: "amara@example.com", joined: "2026-01-14", orders: 6, role: "customer" },
   { id: "u2", name: "Femi Adeyemi", email: "femi@example.com", joined: "2026-02-02", orders: 2, role: "customer" },
   { id: "u3", name: "Grace Okoro", email: "grace@example.com", joined: "2026-03-19", orders: 11, role: "customer" },
-  { id: "u4", name: "Not Tales Admin", email: "admin@nottales.com", joined: "2025-11-01", orders: 0, role: "admin" },
+  { id: "u4", name: "NOT•TALES Admin", email: "admin@nottales.com", joined: "2025-11-01", orders: 0, role: "admin" },
 ];
