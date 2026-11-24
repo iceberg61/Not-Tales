@@ -74,6 +74,51 @@ exports.sendOrderConfirmationEmail = async (to, order) => {
   });
 };
 
+const STATUS_MESSAGES = {
+  shipped: {
+    subject: "Your order has shipped",
+    title: "Your order is on its way.",
+    text: "We've handed your order over for delivery. You'll get another update when it's close to you.",
+  },
+  out_for_delivery: {
+    subject: "Your order is out for delivery",
+    title: "Almost there.",
+    text: "Your order is out for delivery and should reach you soon. Please keep your phone nearby in case the rider calls.",
+  },
+  delivered: {
+    subject: "Your order has been delivered",
+    title: "Your order has been delivered.",
+    text: "We hope you love it. Thanks for shopping with NOT•TALES.",
+  },
+  cancelled: {
+    subject: "Your order has been cancelled",
+    title: "Your order was cancelled.",
+    text: "If you didn't expect this, please contact us and we'll help you sort it out.",
+  },
+};
+
+exports.sendOrderStatusEmail = async (to, order) => {
+  const msg = STATUS_MESSAGES[order.orderStatus];
+  if (!msg) return; // no email for statuses without a message (e.g. processing)
+
+  const orderUrl = `${process.env.CLIENT_URL}/orders/${order._id}`;
+
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: `${msg.subject} — #${order._id.toString().slice(-6).toUpperCase()}`,
+    html: emailWrapper(
+      msg.title,
+      `
+      <p style="color:#1A1410cc; line-height:1.6;">${msg.text}</p>
+      <p style="margin-top:24px;">
+        <a href="${orderUrl}" style="display:inline-block; background:#1A1410; color:#F4EFE4; text-decoration:none; padding:12px 24px; border-radius:999px; font-size:14px;">Track your order</a>
+      </p>
+      `
+    ),
+  });
+};
+
 exports.sendPasswordResetOtpEmail = async (to, otp) => {
   return resend.emails.send({
     from: FROM,

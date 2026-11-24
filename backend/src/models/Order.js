@@ -18,6 +18,8 @@ const orderSchema = new mongoose.Schema(
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     items: [orderItemSchema],
     shippingAddress: {
+      fullName: String,
+      phone: String,
       street: String,
       city: String,
       state: String,
@@ -34,6 +36,13 @@ const orderSchema = new mongoose.Schema(
       enum: ["processing", "shipped", "out_for_delivery", "delivered", "cancelled"],
       default: "processing",
     },
+    statusHistory: [
+      {
+        _id: false,
+        status: String,
+        at: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );

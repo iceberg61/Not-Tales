@@ -4,12 +4,24 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const AppError = require("../utils/AppError");
 const { verifyTransaction } = require("../services/flutterwaveService");
-const { sendOrderConfirmationEmail } = require("../services/emailService");
+const {
+  sendOrderConfirmationEmail,
+  sendOrderStatusEmail,
+} = require("../services/emailService");
 
 // Placeholder flat rate — mirrors the frontend's SHIPPING_FEE constant in
 // cart/checkout. TODO: pull both from one shared config once real shipping
 // rates exist, so they can't drift apart.
 const SHIPPING_FEE = 8;
+
+// Which status an order is allowed to move to next.
+const TRANSITIONS = {
+  processing: ["shipped", "cancelled"],
+  shipped: ["out_for_delivery", "delivered"],
+  out_for_delivery: ["delivered"],
+  delivered: [],
+  cancelled: [],
+};
 
 function generateTxRef() {
   return `NT-${Date.now()}-${crypto.randomBytes(4).toString("hex")}`;
@@ -36,6 +48,7 @@ async function markOrderPaid(order, transactionRef) {
       }
       order.paymentStatus = "paid";
       order.paymentRef = transactionRef;
+      order.statusHistory.push({ status: "processing" });
       await order.save({ session });
     });
   } finally {
@@ -58,7 +71,7 @@ exports.createOrder = async (req, res, next) => {
     const { items, shippingAddress } = req.body;
 
     if (!items?.length) throw new AppError("Cart is empty.", 400);
-    const requiredAddressFields = ["street", "city", "state", "country", "zip"];
+    const requiredAddressFields = ["fullName", "phone", "street", "city", "state", "country", "zip"];
     if (!shippingAddress || requiredAddressFields.some((f) => !shippingAddress[f])) {
       throw new AppError("A complete shipping address is required.", 400);
     }
@@ -216,16 +229,28 @@ exports.getAllOrders = async (req, res, next) => {
 };
 
 // PUT /api/orders/:id/status (admin)
+// Only paid orders can move forward, and only to a valid next step.
+// Every change is recorded in statusHistory and emailed to the buyer.
 exports.updateOrderStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
-    const validStatuses = ["processing", "shipped", "out_for_delivery", "delivered", "cancelled"];
-    if (!validStatuses.includes(status)) {
-      throw new AppError(`Status must be one of: ${validStatuses.join(", ")}.`, 400);
+    const order = await Order.findById(req.params.id).populate("user", "email name");
+    if (!order) throw new AppError("Order not found.", 404);
+
+    if (order.paymentStatus !== "paid") {
+      throw new AppError("This order hasn't been paid for.", 400);
+    }
+    if (!(TRANSITIONS[order.orderStatus] || []).includes(status)) {
+      throw new AppError(`Can't move an order from ${order.orderStatus} to ${status}.`, 400);
     }
 
-    const order = await Order.findByIdAndUpdate(req.params.id, { orderStatus: status }, { new: true });
-    if (!order) throw new AppError("Order not found.", 404);
+    order.orderStatus = status;
+    order.statusHistory.push({ status });
+    await order.save();
+
+    sendOrderStatusEmail(order.user.email, order).catch((err) =>
+      console.error("Status email failed:", err.message)
+    );
 
     res.json({ success: true, order });
   } catch (err) {
