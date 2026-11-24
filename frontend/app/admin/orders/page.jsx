@@ -1,11 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
 import AdminSidebar from "@/components/AdminSidebar";
-import OrderStatusBadge from "@/components/OrderStatusBadge";
 import api from "@/lib/api";
 import { formatNaira } from "@/lib/currency";
 
-const STATUS_OPTIONS = ["processing", "shipped", "out_for_delivery", "delivered", "cancelled"];
+// Which statuses an order may move to next (mirrors the backend rules).
+const NEXT_OPTIONS = {
+  processing: ["shipped", "cancelled"],
+  shipped: ["out_for_delivery", "delivered"],
+  out_for_delivery: ["delivered"],
+  delivered: [],
+  cancelled: [],
+};
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -21,15 +27,19 @@ export default function AdminOrdersPage() {
   }, []);
 
   const updateStatus = async (id, status) => {
-    const previous = orders;
-    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, orderStatus: status } : o))); // optimistic
+    setError("");
     try {
-      await api.put(`/orders/${id}/status`, { status });
+      const { data } = await api.put(`/orders/${id}/status`, { status });
+      setOrders((prev) =>
+        prev.map((o) => (o.id === id ? { ...o, orderStatus: data.order.orderStatus } : o))
+      );
     } catch (err) {
-      setOrders(previous); // roll back on failure
       setError(err.response?.data?.message || "Couldn't update that order's status.");
     }
   };
+
+  // Unpaid / failed checkouts aren't real orders yet — hide them here.
+  const paidOrders = orders.filter((o) => o.paymentStatus === "paid");
 
   return (
     <section className="max-w-7xl mx-auto px-6 py-12 lg:flex gap-10">
@@ -46,11 +56,12 @@ export default function AdminOrdersPage() {
           <p className="text-ink/50 text-sm">Loading...</p>
         ) : (
           <div className="overflow-x-auto -mx-6 sm:mx-0">
-            <table className="w-full text-sm min-w-[620px]">
+            <table className="w-full text-sm min-w-[820px]">
               <thead>
                 <tr className="text-left text-ink/50 border-b border-ink/10">
                   <th className="py-3 px-6 sm:px-0 font-medium">Order</th>
                   <th className="py-3 px-4 font-medium">Customer</th>
+                  <th className="py-3 px-4 font-medium">Ship to</th>
                   <th className="py-3 px-4 font-medium">Date</th>
                   <th className="py-3 px-4 font-medium">Items</th>
                   <th className="py-3 px-4 font-medium">Status</th>
@@ -58,10 +69,17 @@ export default function AdminOrdersPage() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((o) => (
-                  <tr key={o.id} className="border-b border-ink/5">
-                    <td className="py-3 px-6 sm:px-0 font-medium">#{o._id.slice(-6).toUpperCase()}</td>
+                {paidOrders.map((o) => (
+                  <tr key={o.id} className="border-b border-ink/5 align-top">
+                    <td className="py-3 px-6 sm:px-0 font-medium">#{o.id.slice(-6).toUpperCase()}</td>
                     <td className="py-3 px-4 text-ink/60">{o.user?.name || "—"}</td>
+                    <td className="py-3 px-4 text-ink/60 text-xs leading-relaxed">
+                      {o.shippingAddress?.fullName}
+                      <br />
+                      {o.shippingAddress?.phone}
+                      <br />
+                      {o.shippingAddress?.street}, {o.shippingAddress?.city}, {o.shippingAddress?.state}
+                    </td>
                     <td className="py-3 px-4 text-ink/60">
                       {new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </td>
@@ -70,11 +88,13 @@ export default function AdminOrdersPage() {
                     </td>
                     <td className="py-3 px-4">
                       <select
-                        value={o.orderStatus}
-                        onChange={(e) => updateStatus(o.id, e.target.value)}
+                        value=""
+                        onChange={(e) => e.target.value && updateStatus(o.id, e.target.value)}
+                        disabled={!NEXT_OPTIONS[o.orderStatus]?.length}
                         className="bg-cream-2 rounded-pill pl-3 pr-2 py-1.5 text-xs font-medium outline-none capitalize"
                       >
-                        {STATUS_OPTIONS.map((s) => (
+                        <option value="">{o.orderStatus.replace(/_/g, " ")}</option>
+                        {NEXT_OPTIONS[o.orderStatus]?.map((s) => (
                           <option key={s} value={s}>{s.replace(/_/g, " ")}</option>
                         ))}
                       </select>

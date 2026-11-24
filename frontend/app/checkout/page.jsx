@@ -81,6 +81,8 @@ function CheckoutContent() {
       );
 
       const shippingAddress = {
+        fullName: form.name,
+        phone: form.phone,
         street: form.street,
         city: form.city,
         state: form.state,

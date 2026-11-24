@@ -8,9 +8,8 @@ import api from "@/lib/api";
 import { formatNaira } from "@/lib/currency";
 import OrderStatusBadge from "@/components/OrderStatusBadge";
 
-// The backend only stores the current orderStatus, not a dated history of
-// each step — so the timeline is derived from where that status sits in
-// this sequence, rather than read from per-step data like the old mock did.
+// The timeline position comes from the order's current status; the date
+// under each step comes from statusHistory (recorded by the backend).
 const STEPS = [
   { key: "processing", label: "Processing" },
   { key: "shipped", label: "Shipped" },
@@ -38,6 +37,14 @@ export default function OrderTrackingPage() {
   const isCancelled = order.orderStatus === "cancelled";
   const currentIndex = STEPS.findIndex((s) => s.key === order.orderStatus);
 
+  // Date a given step was reached (older orders have no history, so null).
+  const dateFor = (key) => {
+    const entry = order.statusHistory?.find((h) => h.status === key);
+    return entry
+      ? new Date(entry.at).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+      : null;
+  };
+
   return (
     <section className="max-w-3xl mx-auto px-6 py-16">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
@@ -59,7 +66,6 @@ export default function OrderTrackingPage() {
           <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-0">
             {STEPS.map((step, i) => {
               const done = i <= currentIndex;
-              const isCurrent = i === currentIndex;
               return (
                 <div key={step.key} className="flex sm:flex-col items-center sm:flex-1 gap-3 sm:gap-0 sm:text-center">
                   <div className="flex sm:flex-col items-center flex-1">
@@ -80,13 +86,7 @@ export default function OrderTrackingPage() {
                   </div>
                   <div className="sm:mt-3">
                     <p className="text-sm font-medium">{step.label}</p>
-                    <p className="text-xs text-ink/50">
-                      {isCurrent
-                        ? new Date(order.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-                        : done
-                        ? ""
-                        : "Pending"}
-                    </p>
+                    <p className="text-xs text-ink/50">{dateFor(step.key) || (done ? "" : "Pending")}</p>
                   </div>
                 </div>
               );
