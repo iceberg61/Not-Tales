@@ -48,7 +48,7 @@ export default function OrderTrackingPage() {
   return (
     <section className="max-w-3xl mx-auto px-6 py-16">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
-        <h1 className="font-display text-3xl font-bold">Order #{order.id.slice(-6).toUpperCase()}</h1>
+        <h1 className="font-display text-3xl font-bold">Order #{order._id.slice(-6).toUpperCase()}</h1>
         <OrderStatusBadge status={order.orderStatus} />
       </div>
       <p className="text-ink/50 text-sm mb-10">

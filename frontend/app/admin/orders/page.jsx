@@ -31,7 +31,7 @@ export default function AdminOrdersPage() {
     try {
       const { data } = await api.put(`/orders/${id}/status`, { status });
       setOrders((prev) =>
-        prev.map((o) => (o.id === id ? { ...o, orderStatus: data.order.orderStatus } : o))
+        prev.map((o) => (o._id === id ? { ...o, orderStatus: data.order.orderStatus } : o))
       );
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't update that order's status.");
@@ -70,8 +70,8 @@ export default function AdminOrdersPage() {
               </thead>
               <tbody>
                 {paidOrders.map((o) => (
-                  <tr key={o.id} className="border-b border-ink/5 align-top">
-                    <td className="py-3 px-6 sm:px-0 font-medium">#{o.id.slice(-6).toUpperCase()}</td>
+                  <tr key={o._id} className="border-b border-ink/5 align-top">
+                    <td className="py-3 px-6 sm:px-0 font-medium">#{o._id.slice(-6).toUpperCase()}</td>
                     <td className="py-3 px-4 text-ink/60">{o.user?.name || "—"}</td>
                     <td className="py-3 px-4 text-ink/60 text-xs leading-relaxed">
                       {o.shippingAddress?.fullName}
@@ -89,7 +89,7 @@ export default function AdminOrdersPage() {
                     <td className="py-3 px-4">
                       <select
                         value=""
-                        onChange={(e) => e.target.value && updateStatus(o.id, e.target.value)}
+                        onChange={(e) => e.target.value && updateStatus(o._id, e.target.value)}
                         disabled={!NEXT_OPTIONS[o.orderStatus]?.length}
                         className="bg-cream-2 rounded-pill pl-3 pr-2 py-1.5 text-xs font-medium outline-none capitalize"
                       >
