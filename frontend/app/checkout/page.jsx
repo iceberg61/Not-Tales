@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Script from "next/script";
@@ -7,8 +7,6 @@ import axios from "axios";
 import { useCartStore } from "@/lib/store/cartStore";
 import { formatNaira } from "@/lib/currency";
 import RequireAuth from "@/components/RequireAuth";
-
-const SHIPPING_FEE = 8; // must match backend's orderController SHIPPING_FEE
 
 const inputClass =
   "w-full bg-cream rounded-xl px-4 py-3 text-sm outline-none border border-ink/10 focus:border-brown-dark transition-colors";
@@ -22,8 +20,7 @@ const FIELDS = [
 const ADDRESS_FIELDS = [
   { name: "street", placeholder: "Street address", span: true },
   { name: "city", placeholder: "City" },
-  { name: "state", placeholder: "State / Province" },
-  { name: "country", placeholder: "Country" },
+  { name: "state", placeholder: "Select your state", select: true },
   { name: "zip", placeholder: "ZIP / Postal code" },
 ];
 
@@ -34,13 +31,26 @@ function CheckoutContent() {
   const { items, clearCart } = useCartStore();
   const [form, setForm] = useState({
     name: "", email: "", phone: "",
-    street: "", city: "", state: "", country: "", zip: "",
+    street: "", city: "", state: "", zip: "",
   });
   const [error, setError] = useState("");
   const [placing, setPlacing] = useState(false);
+  const [shipping, setShipping] = useState({ states: [], rates: {}, defaultFee: 0 });
+
+  // States and their shipping prices come from the backend, so there is
+  // only one place (backend/src/config/shipping.js) to change them.
+  useEffect(() => {
+    api
+      .get("/orders/shipping-rates")
+      .then(({ data }) =>
+        setShipping({ states: data.states, rates: data.rates, defaultFee: data.defaultFee })
+      )
+      .catch(() => setError("Couldn't load shipping options. Please refresh the page."));
+  }, []);
 
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  const total = subtotal + (items.length ? SHIPPING_FEE : 0);
+  const shippingFee = form.state ? shipping.rates[form.state] ?? shipping.defaultFee : null;
+  const total = subtotal + (shippingFee ?? 0);
 
   const handleChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
@@ -86,7 +96,7 @@ function CheckoutContent() {
         street: form.street,
         city: form.city,
         state: form.state,
-        country: form.country,
+        country: "Nigeria",
         zip: form.zip,
       };
 
@@ -187,17 +197,33 @@ function CheckoutContent() {
             <div>
               <h2 className="font-display text-lg font-semibold mb-4">Shipping address</h2>
               <div className="grid sm:grid-cols-2 gap-4">
-                {ADDRESS_FIELDS.map((f) => (
-                  <input
-                    key={f.name}
-                    name={f.name}
-                    value={form[f.name]}
-                    onChange={handleChange}
-                    placeholder={f.placeholder}
-                    className={`${inputClass} ${f.span ? "sm:col-span-2" : ""}`}
-                  />
-                ))}
+                {ADDRESS_FIELDS.map((f) =>
+                  f.select ? (
+                    <select
+                      key={f.name}
+                      name={f.name}
+                      value={form[f.name]}
+                      onChange={handleChange}
+                      className={inputClass}
+                    >
+                      <option value="">{f.placeholder}</option>
+                      {shipping.states.map((st) => (
+                        <option key={st} value={st}>{st}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      key={f.name}
+                      name={f.name}
+                      value={form[f.name]}
+                      onChange={handleChange}
+                      placeholder={f.placeholder}
+                      className={`${inputClass} ${f.span ? "sm:col-span-2" : ""}`}
+                    />
+                  )
+                )}
               </div>
+              <p className="text-xs text-ink/50 mt-3">We currently deliver within Nigeria only.</p>
             </div>
           </div>
 
@@ -230,7 +256,7 @@ function CheckoutContent() {
               </div>
               <div className="flex justify-between text-ink/60">
                 <span>Shipping</span>
-                <span>{formatNaira(SHIPPING_FEE)}</span>
+                <span>{shippingFee === null ? "Select your state" : formatNaira(shippingFee)}</span>
               </div>
               <div className="border-t border-ink/10 pt-3 flex justify-between font-semibold text-base">
                 <span>Total</span>
