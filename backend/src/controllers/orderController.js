@@ -8,11 +8,13 @@ const {
   sendOrderConfirmationEmail,
   sendOrderStatusEmail,
 } = require("../services/emailService");
-
-// Placeholder flat rate — mirrors the frontend's SHIPPING_FEE constant in
-// cart/checkout. TODO: pull both from one shared config once real shipping
-// rates exist, so they can't drift apart.
-const SHIPPING_FEE = 8;
+const {
+  SHIPPING_RATES,
+  DEFAULT_SHIPPING_FEE,
+  NIGERIAN_STATES,
+  resolveState,
+  getShippingFee,
+} = require("../config/shipping");
 
 // Which status an order is allowed to move to next.
 const TRANSITIONS = {
@@ -71,10 +73,27 @@ exports.createOrder = async (req, res, next) => {
     const { items, shippingAddress } = req.body;
 
     if (!items?.length) throw new AppError("Cart is empty.", 400);
-    const requiredAddressFields = ["fullName", "phone", "street", "city", "state", "country", "zip"];
+    const requiredAddressFields = ["fullName", "phone", "street", "city", "state", "zip"];
     if (!shippingAddress || requiredAddressFields.some((f) => !shippingAddress[f])) {
       throw new AppError("A complete shipping address is required.", 400);
     }
+
+    // We only deliver within Nigeria, and the shipping fee depends on the
+    // state — so the state must be one we recognise.
+    const state = resolveState(shippingAddress.state);
+    if (!state) {
+      throw new AppError("Please choose a valid Nigerian state.", 400);
+    }
+    const address = {
+      fullName: shippingAddress.fullName,
+      phone: shippingAddress.phone,
+      street: shippingAddress.street,
+      city: shippingAddress.city,
+      state,
+      country: "Nigeria",
+      zip: shippingAddress.zip,
+    };
+    const shippingFee = getShippingFee(state); // decided here, never by the browser
 
     const orderItems = [];
     let subtotal = 0;
@@ -100,15 +119,15 @@ exports.createOrder = async (req, res, next) => {
       subtotal += product.price * quantity;
     }
 
-    const total = subtotal + SHIPPING_FEE;
+    const total = subtotal + shippingFee;
     const txRef = generateTxRef();
 
     const order = await Order.create({
       user: req.user.id,
       items: orderItems,
-      shippingAddress,
+      shippingAddress: address,
       subtotal,
-      shippingFee: SHIPPING_FEE,
+      shippingFee,
       total,
       paymentRef: txRef,
     });
@@ -121,6 +140,17 @@ exports.createOrder = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+// GET /api/orders/shipping-rates — public. The checkout page uses this to
+// show the fee as soon as the customer picks a state.
+exports.getShippingRates = (req, res) => {
+  res.json({
+    success: true,
+    states: NIGERIAN_STATES,
+    rates: SHIPPING_RATES,
+    defaultFee: DEFAULT_SHIPPING_FEE,
+  });
 };
 
 // GET /api/orders/my-orders

@@ -4,6 +4,7 @@ const { protect, adminOnly } = require("../middleware/auth");
 const c = require("../controllers/orderController");
 
 router.post("/", protect, c.createOrder);
+router.get("/shipping-rates", c.getShippingRates); // public — must stay above "/:id"
 router.get("/my-orders", protect, c.getMyOrders);
 router.get("/:id", protect, c.getOrderById);
 router.post("/verify-payment", protect, c.verifyPayment);
